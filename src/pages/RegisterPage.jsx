@@ -46,7 +46,7 @@ export default function RegisterPage() {
     };
 
     try {
-      const response = await fetch('https://lp10zmh3-3000.uks1.devtunnels.ms/api/patients', {
+      const response = await fetch('https://intelimed.up.railway.app/api/patients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(patientData),
@@ -78,8 +78,7 @@ export default function RegisterPage() {
           } 
         });
       } else {
-        // FALLBACK: If API doesn't return an ID, go to the general page anyway
-        // so the user isn't stuck on the registration form.
+       
         console.warn('Patient created but ID missing from response. Using fallback route.');
         navigate('/VitalsPage');
       }

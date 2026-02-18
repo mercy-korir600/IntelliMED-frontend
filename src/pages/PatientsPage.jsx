@@ -15,7 +15,7 @@ export default function PatientsPage() {
     const fetchAllPatients = async () => {
       try {
         const token = getAuthToken();
-        const response = await fetch("https://lp10zmh3-3000.uks1.devtunnels.ms/api/patients", {
+        const response = await fetch("https://intelimed.up.railway.app/api/patients", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -60,7 +60,7 @@ export default function PatientsPage() {
   const addPatient = async (patientData) => {
     try {
       const token = getAuthToken();
-      const response = await fetch("https://lp10zmh3-3000.uks1.devtunnels.ms/api/patients", {
+      const response = await fetch("https://intelimed.up.railway.app/api/patients", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,8 +73,7 @@ export default function PatientsPage() {
       }
       const result = await response.json();
       console.log("Patient added successfully:", result);
-      // Re-fetch patients to update the list
-      // fetchAllPatients(); // Would need to make fetchAllPatients accessible or re-call useEffect
+   
     } catch (error) {
       console.error("Error adding patient:", error);
     }
@@ -84,7 +83,7 @@ export default function PatientsPage() {
   const updatePatient = async (id, patientData) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/patients/${id}`, {
+      const response = await fetch(`intelimed.up.railway.app/api/patients/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -106,7 +105,7 @@ export default function PatientsPage() {
   const deletePatient = async (id) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/patients/${id}`, {
+      const response = await fetch(`https://intelimed.up.railway.app/api/patients/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -117,8 +116,6 @@ export default function PatientsPage() {
       }
       const result = await response.json();
       console.log("Patient deleted successfully:", result.message);
-      // Re-fetch patients to update the list
-      // fetchAllPatients();
     } catch (error) {
       console.error("Error deleting patient:", error);
     }
@@ -128,7 +125,7 @@ export default function PatientsPage() {
   const fetchPatientById = async (id) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/patients/${id}`, {
+      const response = await fetch(`https://intelimed.up.railway.app/api/patients/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -221,7 +218,7 @@ export default function PatientsPage() {
               
             <button
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
-              // onClick={() => alert("Navigate to register patient")}
+              
             >
               Register New Patient
             </button>

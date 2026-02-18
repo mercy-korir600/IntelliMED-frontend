@@ -35,7 +35,7 @@ const features = [
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Custom Primary Color mapped to Tailwind-friendly Hex: #2B4563
+ 
   const primaryColor = "bg-[#2B4563]";
   const primaryText = "text-[#2B4563]";
   const primaryBorder = "border-[#2B4563]";

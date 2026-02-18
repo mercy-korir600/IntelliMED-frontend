@@ -1,35 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom"; // Added useParams
+import { useNavigate, useParams } from "react-router-dom"; 
 import { ArrowLeft, ClipboardList, CheckCircle2 } from "lucide-react";
 import Header from '../components/Header';
 
 export default function GeneralAssessmentPage() {
   const navigate = useNavigate();
-  const { patientId } = useParams(); // Get patientId from URL parameters
+  const { patientId } = useParams(); 
   const brandColor = "#2B4563";
   
-  const [patientName, setPatientName] = useState("Loading Patient..."); // Updated initial state
+  const [patientName, setPatientName] = useState("Loading Patient...");
   const [formData, setFormData] = useState({
     visitDate: new Date().toISOString().split("T")[0],
-    generalHealth: "", // Maps to healthStatus
-    drugsUsage: "",    // Maps to onDrugs
-    comments: "",      // Not directly mapped to API, keep for local context/future expansion
+    generalHealth: "", 
+    drugsUsage: "",    
+    comments: "",     
   });
-  const [assessments, setAssessments] = useState([]); // To store fetched assessments
+  const [assessments, setAssessments] = useState([]); 
 
   const getAuthToken = () => {
     return localStorage.getItem("auth_token");
   };
 
   useEffect(() => {
-    // For now, patientId must come from URL params. 
-    // In a real app, you might fetch patient details here to get the name.
+   
     if (patientId) {
-      setPatientName(`Patient ${patientId}`); // Placeholder for patient name
+      setPatientName(`Patient ${patientId}`);
       const fetchAssessments = async () => {
         try {
           const token = getAuthToken();
-          const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments/patient/${patientId}`, {
+          const response = await fetch(`https://intelimed.up.railway.app/api/assessments/patient/${patientId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -46,7 +45,7 @@ export default function GeneralAssessmentPage() {
       };
       fetchAssessments();
     } else {
-      // If no patientId, maybe redirect or show an error
+      
       console.warn("No patientId found in URL for General Assessment Page.");
       navigate('/PatientsPage'); // Redirect if no patient context
     }
@@ -67,15 +66,15 @@ export default function GeneralAssessmentPage() {
 
     const assessmentData = {
       patientId: patientId,
-      healthStatus: formData.generalHealth === "Good" ? "Good" : "Bad", // Mapping "Poor" to "Bad" as per API
-      onDiet: "N/A", // Not present in form, defaulting to N/A
-      onDrugs: formData.drugsUsage === "Yes" ? "Yes" : "No", // Mapping to Yes/No
+      healthStatus: formData.generalHealth === "Good" ? "Good" : "Bad", 
+      onDiet: "N/A", 
+      onDrugs: formData.drugsUsage === "Yes" ? "Yes" : "No", 
       visitDate: formData.visitDate,
     };
 
     try {
       const token = getAuthToken();
-      const response = await fetch("https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments", {
+      const response = await fetch("https://intelimed.up.railway.app/api/assessments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +102,7 @@ export default function GeneralAssessmentPage() {
   const updateAssessment = async (id, updatedData) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments/${id}`, {
+      const response = await fetch(`https://intelimed.up.railway.app/api/assessments/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -125,7 +124,7 @@ export default function GeneralAssessmentPage() {
   const deleteAssessment = async (id) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments/${id}`, {
+      const response = await fetch(`https://intelimed.up.railway.app/api/assessments/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

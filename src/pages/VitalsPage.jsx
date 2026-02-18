@@ -27,11 +27,10 @@ export default function VitalsPage() {
       return;
     }
 
-    // Optional: Fetch Patient Name to make the UI personal
     const fetchPatientDetails = async () => {
       try {
         const token = getAuthToken();
-        const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/patients/${patientId}`, {
+        const response = await fetch(`https://intelimed.up.railway.app/api/patients/${patientId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.ok) {
@@ -89,7 +88,7 @@ export default function VitalsPage() {
 
     try {
       const token = getAuthToken();
-      const response = await fetch("https://lp10zmh3-3000.uks1.devtunnels.ms/api/vitals", {
+      const response = await fetch("https://intelimed.up.railway.app/api/vitals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,8 +101,6 @@ export default function VitalsPage() {
 
       if (!response.ok) throw new Error(result.message || "Submission failed");
 
-      // LOGIC: Automated Routing based on BMI Status
-      // If your API returns status in 'result.data.bmiStatus'
       const status = result.data?.bmiStatus || (bmi >= 25 ? "Overweight" : "Normal");
 
       if (status === "Overweight" || status === "Obese") {

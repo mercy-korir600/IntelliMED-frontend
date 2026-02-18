@@ -5,7 +5,6 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Branding Color: HSL(210, 40%, 28%) -> Hex: #2B4563
   const brandColor = "#2B4563";
 
   const [formData, setFormData] = useState({
@@ -34,7 +33,7 @@ export default function SignupPage() {
     setError('');
 
     try {
-      const response = await fetch('https://lp10zmh3-3000.uks1.devtunnels.ms/api/auth/register', {
+      const response = await fetch('https://intelimed.up.railway.app/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

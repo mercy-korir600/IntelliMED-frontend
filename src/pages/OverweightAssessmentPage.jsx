@@ -29,7 +29,7 @@ export default function OverweightAssessmentPage() {
       const fetchAssessments = async () => {
         try {
           const token = getAuthToken();
-          const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments/patient/${patientId}`, {
+          const response = await fetch(`https://intelimed.up.railway.app/api/assessments/patient/${patientId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -67,15 +67,15 @@ export default function OverweightAssessmentPage() {
 
     const assessmentData = {
       patientId: patientId,
-      healthStatus: formData.generalHealth === "Good" ? "Good" : "Bad", // Mapping "Poor" to "Bad" as per API
-      onDiet: formData.dietHistory === "Yes" ? "Yes" : "No", // Mapping to Yes/No
-      onDrugs: "N/A", // Not collected in this form, defaulting to N/A
+      healthStatus: formData.generalHealth === "Good" ? "Good" : "Bad",
+      onDiet: formData.dietHistory === "Yes" ? "Yes" : "No",
+      onDrugs: "N/A", 
       visitDate: formData.visitDate,
     };
 
     try {
       const token = getAuthToken();
-      const response = await fetch("https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments", {
+      const response = await fetch("https://intelimed.up.railway.app/api/assessments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,18 +92,18 @@ export default function OverweightAssessmentPage() {
 
       console.log("Overweight assessment recorded:", result.data);
       alert("Overweight assessment submitted successfully!");
-      navigate("/PatientsPage"); // Navigate after successful submission
+      navigate("/PatientsPage");
     } catch (error) {
       console.error("Error submitting overweight assessment:", error);
       alert(`Error: ${error.message}`);
     }
   };
 
-  // Placeholder for updating an assessment (same as GeneralAssessmentPage)
+
   const updateAssessment = async (id, updatedData) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments/${id}`, {
+      const response = await fetch(`https://intelimed.up.railway.app/api/assessments/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -121,11 +121,10 @@ export default function OverweightAssessmentPage() {
     }
   };
 
-  // Placeholder for deleting an assessment (same as GeneralAssessmentPage)
   const deleteAssessment = async (id) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments/${id}`, {
+      const response = await fetch(`https://intelimed.up.railway.app/api/assessments/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
