@@ -25,7 +25,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full transition-all duration-300 border-b border-slate-200/50 bg-blue-900 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full transition-all duration-300 border-b border-slate-200/50 bg-[#2A4A63]   backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
         
         {/* Brand Logo */}
@@ -67,9 +67,7 @@ export default function Header() {
           <div className="h-5 w-[1px] bg-slate-200 mx-4" />
 
           {/* Action Button */}
-          <button className="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-800 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 active:scale-95">
-            New Entry
-          </button>
+          
         </nav>
 
         {/* Mobile Toggle */}
@@ -91,7 +89,7 @@ export default function Header() {
               key={item.name}
               to={item.path} 
               className={`text-base font-bold p-4 rounded-xl transition-colors ${
-                location.pathname === item.path ? 'bg-blue-50 text-blue-600' : 'text-slate-600 active:bg-slate-50'
+                location.pathname === item.path ? 'bg-blue-50 text-slate-600' : 'text-slate-00 active:bg-slate-50'
               }`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
