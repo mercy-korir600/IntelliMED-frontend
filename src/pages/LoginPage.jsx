@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link ,useNavigate} from 'react-router-dom';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+   const navigate = useNavigate();
 
-  // Brand Color: HSL(210, 40%, 28%) -> Hex: #2B4563
   const brandColor = "#2B4563";
 
   const [formData, setFormData] = useState({
@@ -26,8 +26,7 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
-        method: 'POST',
+                const response = await fetch('https://intelimed.up.railway.app/api/auth/login', {        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
@@ -38,8 +37,8 @@ export default function LoginPage() {
         throw new Error(result.message || 'Invalid credentials');
       }
 
-      localStorage.setItem('auth_token', result.data.access_token);
-      window.location.href = '/dashboard';
+      localStorage.setItem('auth_token', result.token);
+    navigate('/RegisterPage');
     } catch (err) {
       setError(err.message || 'Authentication failed. Please check your credentials.');
     } finally {
@@ -146,7 +145,6 @@ export default function LoginPage() {
                 {error}
               </div>
             )}
-<Link to="/RegisterPage">
             <button
               type="submit"
               disabled={isLoading}
@@ -155,7 +153,6 @@ export default function LoginPage() {
             >
               {isLoading ? "Authenticating..." : "Sign In"}
             </button>
-            </Link>
           </form>
 
           <div className="mt-12 text-center">

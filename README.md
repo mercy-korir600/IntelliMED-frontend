@@ -1,17 +1,110 @@
-# React + Vite
+# IntelliMED
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**IntelliMED** is a frontend application built with **React** and **Vite**.  
+It provides a responsive user interface for managing patient assessments, vitals, registration, and more—designed with modern tooling and best practices.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- Authentication (login / registration)
+- Patient management dashboard
+- General and overweight assessment workflows
+- Vital sign tracking page
+- Mobile‑friendly, component‑based UI
+- Tailwind CSS for styling
+- Fast development with Vite HMR
+- ESLint + Prettier for code quality
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Technology Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# IntelliMED-frontend
+- **React 18** (hooks & JSX)
+- **Vite** as the build tool
+- **Tailwind CSS** for utility‑first styling
+- **ESLint** (with recommended React rules)
+- **PostCSS** configuration
+- Modern JavaScript (ESM) in a Windows environment
+
+---
+
+## Getting Started
+
+1. **Clone the repository**
+   ```bash
+   git clone <your‑repo‑url>
+   cd intellihealth
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   # opens at http://localhost:5173 by default
+   ```
+
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+5. **Preview the production build**
+   ```bash
+   npm run serve
+   ```
+
+---
+
+## Project Structure
+
+```
+src/
+  assets/
+  components/
+    Header.jsx
+  pages/
+    GeneralAssessmentPage.jsx
+    LandingPage.jsx
+    LoginPage.jsx
+    NotFound.jsx
+    OverweightAssessmentPage.jsx
+    PatientsPage.jsx
+    RegisterPage.jsx
+    SignupPage.jsx
+    VitalsPage.jsx
+  App.jsx
+  main.jsx
+  App.css
+  index.css
+```
+
+---
+
+## Available Scripts
+
+| Script           | Description                          |
+|------------------|--------------------------------------|
+| `npm run dev`    | Start dev server with HMR            |
+| `npm run build`  | Create a production build            |
+| `npm run serve`  | Preview production build locally     |
+| `npm run lint`   | Run ESLint on source files (if configured) |
+
+
+
+---
+
+## Contributing
+
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feat/your-feature`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feat/your-feature`).
+5. Open a pull request describing your changes.
+

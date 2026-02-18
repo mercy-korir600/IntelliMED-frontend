@@ -1,61 +1,146 @@
-import React, { useState, useEffect } from "react"
-import Header from '../components/Header';
+import React, { useState, useEffect } from "react";
+import Header from "../components/Header";
 import { Link } from "react-router-dom";
 
 export default function PatientsPage() {
-  const [patients, setPatients] = useState([])
-  const [filteredPatients, setFilteredPatients] = useState([])
-  const [filterDate, setFilterDate] = useState("")
+  const [patients, setPatients] = useState([]);
+  const [filteredPatients, setFilteredPatients] = useState([]);
+  const [filterDate, setFilterDate] = useState("");
+
+  const getAuthToken = () => {
+    return localStorage.getItem("auth_token");
+  };
 
   useEffect(() => {
-    // Mock patient data
-    const mockPatients = [
-      {
-        id: 1,
-        firstName: "John",
-        lastName: "Mdoe",
-        age: 33,
-        gender: "Male",
-        bmiStatus: "Normal",
-        lastAssessmentDate: "2025-12-01",
-      },
-      {
-        id: 2,
-        firstName: "Jane",
-        lastName: "Mdoe",
-        age: 28,
-        gender: "Female",
-        bmiStatus: "Overweight",
-        lastAssessmentDate: "2025-11-29",
-      },
-    ]
-
-    const currentPatient = sessionStorage.getItem("currentPatient")
-    if (currentPatient) {
+    const fetchAllPatients = async () => {
       try {
-        const patientData = JSON.parse(currentPatient)
-        const newPatient = {
-          id: patientData.id,
-          firstName: patientData.firstName,
-          lastName: patientData.lastName,
-          age: calculateAge(patientData.dateOfBirth),
-          gender: patientData.gender,
-          bmiStatus: calculateBMIStatus(sessionStorage.getItem("currentVitals")),
-          lastAssessmentDate: new Date().toISOString().split("T")[0],
+        const token = getAuthToken();
+        const response = await fetch("https://intelimed.up.railway.app/api/patients", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch patients");
         }
-        const exists = mockPatients.some((p) => p.id === newPatient.id)
-        if (!exists) mockPatients.unshift(newPatient)
+        const result = await response.json();
+        const processedPatients = result.data.map(patient => {
+          const age = patient.dob ? calculateAge(patient.dob) : 'N/A';
 
-        // Clear session storage
-        sessionStorage.removeItem("currentPatient")
-        sessionStorage.removeItem("currentVitals")
-        sessionStorage.removeItem("currentAssessment")
-      } catch {}
+          let bmiStatus = 'Not recorded';
+          let lastAssessmentDate = 'N/A';
+
+          if (patient.vitals && patient.vitals.length > 0) {
+            // Sort vitals by recordedAt date to get the latest
+            const sortedVitals = [...patient.vitals].sort((a, b) => new Date(b.recordedAt) - new Date(a.recordedAt));
+            const latestVital = sortedVitals[0];
+
+            bmiStatus = calculateBMIStatus(latestVital.bmi);
+            lastAssessmentDate = new Date(latestVital.recordedAt).toLocaleDateString();
+          }
+
+          return {
+            ...patient,
+            age,
+            bmiStatus,
+            lastAssessmentDate,
+          };
+        });
+        setPatients(processedPatients);
+        setFilteredPatients(processedPatients);
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+      }
+    };
+
+    fetchAllPatients();
+  }, []);
+
+  // Placeholder for adding a patient
+  const addPatient = async (patientData) => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch("https://intelimed.up.railway.app/api/patients", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(patientData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to add patient");
+      }
+      const result = await response.json();
+      console.log("Patient added successfully:", result);
+   
+    } catch (error) {
+      console.error("Error adding patient:", error);
     }
+  };
 
-    setPatients(mockPatients)
-    setFilteredPatients(mockPatients)
-  }, [])
+  // Placeholder for updating a patient
+  const updatePatient = async (id, patientData) => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`intelimed.up.railway.app/api/patients/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(patientData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update patient");
+      }
+      const result = await response.json();
+      console.log("Patient updated successfully:", result);
+    } catch (error) {
+      console.error("Error updating patient:", error);
+    }
+  };
+
+  // Placeholder for deleting a patient
+  const deletePatient = async (id) => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`https://intelimed.up.railway.app/api/patients/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete patient");
+      }
+      const result = await response.json();
+      console.log("Patient deleted successfully:", result.message);
+    } catch (error) {
+      console.error("Error deleting patient:", error);
+    }
+  };
+
+  // Placeholder for fetching a single patient by ID
+  const fetchPatientById = async (id) => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`https://intelimed.up.railway.app/api/patients/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch patient by ID");
+      }
+      const result = await response.json();
+      console.log("Patient fetched by ID:", result.data);
+      return result.data;
+    } catch (error) {
+      console.error("Error fetching patient by ID:", error);
+      return null;
+    }
+  };
 
   const calculateAge = (dateOfBirth) => {
     const today = new Date()
@@ -68,17 +153,11 @@ export default function PatientsPage() {
     return age
   }
 
-  const calculateBMIStatus = (vitalsJson) => {
-    if (!vitalsJson) return "Not recorded"
-    try {
-      const vitals = JSON.parse(vitalsJson)
-      const bmi = vitals.bmi
-      if (bmi < 18.5) return "Underweight"
-      if (bmi <= 25) return "Normal"
-      return "Overweight"
-    } catch {
-      return "Not recorded"
-    }
+  const calculateBMIStatus = (bmi) => {
+    if (bmi === null || typeof bmi === 'undefined') return "Not recorded";
+    if (bmi < 18.5) return "Underweight";
+    if (bmi <= 25) return "Normal";
+    return "Overweight";
   }
 
   const handleFilterByDate = (date) => {
@@ -139,7 +218,7 @@ export default function PatientsPage() {
               
             <button
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
-              // onClick={() => alert("Navigate to register patient")}
+              
             >
               Register New Patient
             </button>
@@ -185,6 +264,7 @@ export default function PatientsPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b bg-gray-100">
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Patient ID</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Patient Name</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Age</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Gender</th>
@@ -198,6 +278,7 @@ export default function PatientsPage() {
                     key={patient.id}
                     className="border-b hover:bg-gray-50 transition-colors"
                   >
+                    <td className="px-6 py-4 text-sm text-gray-700">{patient.patientId}</td>
                     <td className="px-6 py-4 text-sm font-medium text-gray-700">
                       {patient.firstName} {patient.lastName}
                     </td>

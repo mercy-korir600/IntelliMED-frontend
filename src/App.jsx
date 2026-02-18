@@ -16,15 +16,15 @@ function App() {
         <Route path="/SignupPage" element={<SignupPage />} />
         <Route path="/LoginPage" element={<LoginPage />} />
         <Route path="/RegisterPage" element={<RegisterPage />} />
-        <Route path="/VitalsPage" element={<VitalsPage />} />
+        <Route path="/VitalsPage/:patientId" element={<VitalsPage />} />
         <Route
-          path="/GeneralAssessmentPage"
+          path="/GeneralAssessmentPage/:patientId"
           element={<GeneralAssessmentPage />}
         />
        
    
         <Route
-          path="/OverweightAssessmentPage"
+          path="/OverweightAssessmentPage/:patientId"
           element={<OverweightAssessmentPage />}
         />
         <Route path="/PatientsPage" element={<PatientsPage />} />
