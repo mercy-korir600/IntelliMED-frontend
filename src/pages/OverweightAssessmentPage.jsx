@@ -1,47 +1,143 @@
 import React, { useState, useEffect } from "react";
 import Header from '../components/Header';
-import { useNavigate } from "react-router-dom"; // Use the hook instead of the component
+import { useNavigate, useParams } from "react-router-dom"; // Use the hook instead of the component
 import { ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function OverweightAssessmentPage() {
   const navigate = useNavigate(); // Initialize navigation
+  const { patientId } = useParams(); // Get patientId from URL parameters
   const brandColor = "#2B4563";
   
-  const [patientName, setPatientName] = useState("");
+  const [patientName, setPatientName] = useState("Loading Patient..."); // Updated initial state
   const [formData, setFormData] = useState({
     visitDate: new Date().toISOString().split("T")[0],
-    generalHealth: "",
-    dietHistory: "",
-    comments: "",
+    generalHealth: "", // Maps to healthStatus
+    dietHistory: "", // Maps to onDiet
+    comments: "",      // Not directly mapped to API, keep for local context/future expansion
   });
+  const [assessments, setAssessments] = useState([]); // To store fetched assessments
+
+  const getAuthToken = () => {
+    return localStorage.getItem("auth_token");
+  };
 
   useEffect(() => {
-    const patient = sessionStorage.getItem("currentPatient");
-    if (patient) {
-      const patientData = JSON.parse(patient);
-      setPatientName(`${patientData.firstName} ${patientData.lastName}`);
+    // For now, patientId must come from URL params. 
+    // In a real app, you might fetch patient details here to get the name.
+    if (patientId) {
+      setPatientName(`Patient ${patientId}`); // Placeholder for patient name
+      const fetchAssessments = async () => {
+        try {
+          const token = getAuthToken();
+          const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments/patient/${patientId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Failed to fetch assessments");
+          }
+          const result = await response.json();
+          setAssessments(result.data);
+          console.log("Fetched assessments for patient:", result.data);
+        } catch (error) {
+          console.error("Error fetching assessments:", error);
+        }
+      };
+      fetchAssessments();
+    } else {
+      // If no patientId, redirect to patients page
+      console.warn("No patientId found in URL for Overweight Assessment Page.");
+      navigate('/PatientsPage'); 
     }
-  }, []);
+  }, [patientId, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!patientId) {
+      alert("Patient ID is missing. Cannot submit assessment.");
+      return;
+    }
+
     const assessmentData = {
-      type: "overweight",
-      ...formData,
-      patientName,
-      recordedAt: new Date().toISOString(),
+      patientId: patientId,
+      healthStatus: formData.generalHealth === "Good" ? "Good" : "Bad", // Mapping "Poor" to "Bad" as per API
+      onDiet: formData.dietHistory === "Yes" ? "Yes" : "No", // Mapping to Yes/No
+      onDrugs: "N/A", // Not collected in this form, defaulting to N/A
+      visitDate: formData.visitDate,
     };
 
-   
-    sessionStorage.setItem("currentAssessment", JSON.stringify(assessmentData));
-    console.log("Overweight assessment recorded:", assessmentData);
-    navigate("/PatientsPage");
+    try {
+      const token = getAuthToken();
+      const response = await fetch("https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(assessmentData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to create assessment");
+      }
+
+      console.log("Overweight assessment recorded:", result.data);
+      alert("Overweight assessment submitted successfully!");
+      navigate("/PatientsPage"); // Navigate after successful submission
+    } catch (error) {
+      console.error("Error submitting overweight assessment:", error);
+      alert(`Error: ${error.message}`);
+    }
+  };
+
+  // Placeholder for updating an assessment (same as GeneralAssessmentPage)
+  const updateAssessment = async (id, updatedData) => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update assessment");
+      }
+      const result = await response.json();
+      console.log("Assessment updated successfully:", result);
+    } catch (error) {
+      console.error("Error updating assessment:", error);
+    }
+  };
+
+  // Placeholder for deleting an assessment (same as GeneralAssessmentPage)
+  const deleteAssessment = async (id) => {
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`https://lp10zmh3-3000.uks1.devtunnels.ms/api/assessments/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });      if (!response.ok) {
+        throw new Error("Failed to delete assessment");
+      }
+      const result = await response.json();
+      console.log("Assessment deleted successfully:", result.message);
+    } catch (error) {
+      console.error("Error deleting assessment:", error);
+    }
   };
 
   const handleCancel = () => {

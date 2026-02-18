@@ -9,7 +9,8 @@ export default function SignupPage() {
   const brandColor = "#2B4563";
 
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -33,11 +34,12 @@ export default function SignupPage() {
     setError('');
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
+      const response = await fetch('https://lp10zmh3-3000.uks1.devtunnels.ms/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.name,
+          Firstname: formData.firstName,
+          Lastname: formData.lastName,
           email: formData.email,
           password: formData.password,
         }),
@@ -49,8 +51,9 @@ export default function SignupPage() {
         throw new Error(result.message || 'Registration failed');
       }
 
-      localStorage.setItem('auth_token', result.data.access_token);
-      window.location.href = '/dashboard';
+      console.log('User registered successfully:', result.message);
+      // As per API docs, registration doesn't return an access token, so navigate to login
+      window.location.href = '/LoginPage'; 
     } catch (err) {
       setError(err.message || 'Unable to create account. Please try again.');
     } finally {
@@ -104,18 +107,34 @@ export default function SignupPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Full Name */}
+            {/* First Name */}
             <div className="space-y-2">
               <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
-                Full Name 
+                First Name 
               </label>
               <input
                 type="text"
-                name="name"
+                name="firstName"
                 required
-                value={formData.name}
+                value={formData.firstName}
                 onChange={handleChange}
-                placeholder="Dr. Alexander Pierce"
+                placeholder="Dr. Alexander"
+                className="w-full px-5 py-4 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-[#2B4563]/5 focus:border-[#2B4563] outline-none transition-all bg-white"
+              />
+            </div>
+
+            {/* Last Name */}
+            <div className="space-y-2">
+              <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">
+                Last Name 
+              </label>
+              <input
+                type="text"
+                name="lastName"
+                required
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Pierce"
                 className="w-full px-5 py-4 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-[#2B4563]/5 focus:border-[#2B4563] outline-none transition-all bg-white"
               />
             </div>
